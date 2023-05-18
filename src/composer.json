@@ -1,0 +1,19 @@
+{
+    "name": "root/www",
+    "autoload": {
+        "psr-4": {
+            "Root\\Www\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Rakib"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "App\\":"./app"
+        }
+    },
+    "require": {}
+}
