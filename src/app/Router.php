@@ -9,10 +9,16 @@ class Router
     {
     }
     protected array $routes = [];
-    public function get(string $path, callable|string $callback): static
+    public function get(string $path, callable|string|array $callback): static
     {
         $this->routes['get'][$path] = $callback;
 
+        return $this;
+    }
+
+    public function post(string $path, callable|string|array $callback): static
+    {
+        $this->routes['post'][$path] = $callback;
         return $this;
     }
 
@@ -30,25 +36,35 @@ class Router
             return $this->resolveView($callback);
         }
 
-        return call_user_func($callback);
+        if (is_array($callback)) {
+            Application::$app->controller = $callback[0] = new $callback[0];
+        }
+
+        return call_user_func($callback, $this->request);
     }
 
-    private function resolveView($view)
+    public function resolveView($view, array $params = [])
     {
+
         $layoutContents = $this->getLayoutContents();
-        $viewContents = $this->getViewContents($view);
+        $viewContents = $this->getViewContents($view, $params);
         return str_replace('{{content}}', $viewContents, $layoutContents);
     }
 
     private function getLayoutContents()
     {
+        $layout = Application::$app->controller->layout;
         ob_start();
-        include Application::$ROOT_PATH . "/app/Views/layouts/layout.php";
+        include Application::$ROOT_PATH . "/app/Views/layouts/{$layout}.php";
         return ob_get_clean();
     }
 
-    private function getViewContents($view)
+    private function getViewContents($view, array $params = [])
     {
+
+        foreach ($params as $key => $value) {
+            $$key = $value;
+        }
         ob_start();
         include Application::$ROOT_PATH . "/app/Views/{$view}.php";
         return ob_get_clean();
