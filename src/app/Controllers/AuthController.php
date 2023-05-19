@@ -2,6 +2,7 @@
 
 namespace App\Controllers;
 
+use App\Models\RegisterModel;
 use App\Request;
 use App\Controller;
 
@@ -25,5 +26,7 @@ class AuthController extends Controller
         if ($request->isGet()) {
             $this->render('register');
         }
+
+        $regModel = new RegisterModel();
     }
 }
