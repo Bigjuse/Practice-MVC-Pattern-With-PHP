@@ -22,11 +22,22 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+        $regModel = new RegisterModel();
+
         $this->setLayout('second_layout');
         if ($request->isGet()) {
-            $this->render('register');
+            $this->render('register', ['model' => $regModel]);
         }
 
-        $regModel = new RegisterModel();
+        if ($request->isPost()) {
+            $regModel->loadData($request->getBody());
+
+
+            if ($regModel->validate() && $regModel->register()) {
+                return 'success';
+            } else {
+                return $this->render('register', ['model' => $regModel]);
+            }
+        }
     }
 }

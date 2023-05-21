@@ -2,7 +2,8 @@
 
 namespace App\Models;
 
-class LoginModel
-{
+use App\Model;
 
+class LoginModel extends Model
+{
 }
